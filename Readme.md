@@ -1,3 +1,8 @@
+<!-- default file list -->
+*Files to look at*:
+
+* [MainWindow.xaml.cs](./CS/RuntimeReportsApplication/MainWindow.xaml.cs) (VB: [MainWindow.xaml.vb](./VB/RuntimeReportsApplication/MainWindow.xaml.vb))
+<!-- default file list end -->
 # How to dynamically generate a report in a WPF application
 
 
