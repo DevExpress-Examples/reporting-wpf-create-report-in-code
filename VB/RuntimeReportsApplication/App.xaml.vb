@@ -1,16 +1,11 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports System.Configuration
-Imports System.Data
-Imports System.Linq
-Imports System.Threading.Tasks
 Imports System.Windows
 
 Namespace RuntimeReportsApplication
+
     ''' <summary>
     ''' Interaction logic for App.xaml
     ''' </summary>
-    Partial Public Class App
+    Public Partial Class App
         Inherits Application
 
         Protected Overrides Sub OnStartup(ByVal e As StartupEventArgs)
@@ -19,6 +14,5 @@ Namespace RuntimeReportsApplication
             '    DevExpress.XtraReports.UI.DataBindingMode.Bindings;
             MyBase.OnStartup(e)
         End Sub
-
     End Class
 End Namespace
