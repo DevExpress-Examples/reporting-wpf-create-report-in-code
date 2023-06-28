@@ -1,6 +1,7 @@
 ﻿#Region "#Reference"
 Imports DevExpress.DataAccess.ConnectionParameters
 Imports DevExpress.DataAccess.Sql
+Imports DevExpress.Xpf.Printing
 Imports DevExpress.XtraPrinting
 Imports DevExpress.XtraReports.Configuration
 Imports DevExpress.XtraReports.UI
@@ -18,10 +19,13 @@ Namespace RuntimeReportsApplication
 
         Public Sub New()
             InitializeComponent()
+        End Sub
+
+        Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
             CreateReport()
         End Sub
 
-        #Region "#CreateReport"
+#Region "#CreateReport"
         Public Sub CreateReport()
             ' Create an empty report.
             Dim report As New XtraReport()
@@ -40,26 +44,28 @@ Namespace RuntimeReportsApplication
             ' Publish the report.
             PublishReport(report)
         End Sub
-        #End Region ' #CreateReport
+#End Region ' #CreateReport
 
-        #Region "#BindToData"
+#Region "#BindToData"
         Private Sub BindToData(ByVal report As XtraReport)
             ' Create a data source.
             Dim connectionParameters As New Access97ConnectionParameters("../../nwind.mdb", "", "")
             Dim ds As New DevExpress.DataAccess.Sql.SqlDataSource(connectionParameters)
 
             ' Create an SQL query to access the master table.
-            Dim queryCategories As New CustomSqlQuery()
-            queryCategories.Name = "queryCategories"
-            queryCategories.Sql = "SELECT * FROM Categories"
+            Dim queryCategories As New CustomSqlQuery With {
+                .Name = "queryCategories",
+                .Sql = "SELECT * FROM Categories"
+            }
 
             ' Create an SQL query to access the detail table.
-            Dim queryProducts As New CustomSqlQuery()
-            queryProducts.Name = "queryProducts"
-            queryProducts.Sql = "SELECT * FROM Products"
+            Dim queryProducts As New CustomSqlQuery With {
+                .Name = "queryProducts",
+                .Sql = "SELECT * FROM Products"
+            }
 
             ' Add the queries to the data source collection.
-            ds.Queries.AddRange(New SqlQuery() { queryCategories, queryProducts })
+            ds.Queries.AddRange(New SqlQuery() {queryCategories, queryProducts})
 
             ' Create a master-detail relation between the queries.
             ds.Relations.Add("queryCategories", "queryProducts", "CategoryID", "CategoryID")
@@ -68,15 +74,15 @@ Namespace RuntimeReportsApplication
             report.DataSource = ds
             report.DataMember = "queryCategories"
         End Sub
-        #End Region ' #BindToData
 
-        #Region "#CreateMasterReport"
+#End Region ' #BindToData
+#Region "#CreateMasterReport"
         Private Sub CreateReportHeader(ByVal report As XtraReport, ByVal caption As String)
             ' Create a report title.
             Dim label As New XRLabel()
             label.Font = New Font("Tahoma", 12, System.Drawing.FontStyle.Bold)
             label.Text = caption
-            label.WidthF = 300F
+            label.WidthF = 300.0F
 
             ' Create a report header and add the title to it.
             Dim reportHeader As New ReportHeaderBand()
@@ -89,7 +95,7 @@ Namespace RuntimeReportsApplication
             ' Create a new label with the required settings. bound to the CategoryName data field.
             Dim labelDetail As New XRLabel()
             labelDetail.Font = New Font("Tahoma", 10, System.Drawing.FontStyle.Bold)
-            labelDetail.WidthF = 300F
+            labelDetail.WidthF = 300.0F
 
             ' Bind the label to the CategoryName data field depending on the report's data binding mode.
             If Settings.Default.UserDesignerOptions.DataBindingMode = DataBindingMode.Bindings Then
@@ -103,12 +109,12 @@ Namespace RuntimeReportsApplication
             detailBand.Height = labelDetail.Height
             detailBand.KeepTogetherWithDetailReports = True
             report.Bands.Add(detailBand)
-            labelDetail.TopF = detailBand.LocationFloat.Y + 20F
+            labelDetail.TopF = detailBand.LocationFloat.Y + 20.0F
             detailBand.Controls.Add(labelDetail)
         End Sub
-        #End Region ' #CreateMasterReport
+#End Region ' #CreateMasterReport
 
-        #Region "#CreateDetailReport"
+#Region "#CreateDetailReport"
         Private Sub CreateDetailReport(ByVal report As XtraReport, ByVal dataMember As String)
             ' Create a detail report band and bind it to data.
             Dim detailReportBand As New DetailReportBand()
@@ -135,7 +141,7 @@ Namespace RuntimeReportsApplication
             cellHeader2.Text = "Unit Price"
             cellHeader2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight
 
-            tableHeader.Rows(0).Cells.AddRange(New XRTableCell() { cellHeader1, cellHeader2 })
+            tableHeader.Rows(0).Cells.AddRange(New XRTableCell() {cellHeader1, cellHeader2})
             detailReportHeader.Height = tableHeader.Height
             detailReportHeader.Controls.Add(tableHeader)
 
@@ -164,7 +170,7 @@ Namespace RuntimeReportsApplication
                 cellDetail2.ExpressionBindings.Add(New ExpressionBinding("BeforePrint", "Text", "FormatString('{0:$0.00}', [UnitPrice])"))
             End If
 
-            tableDetail.Rows(0).Cells.AddRange(New XRTableCell() { cellDetail1, cellDetail2 })
+            tableDetail.Rows(0).Cells.AddRange(New XRTableCell() {cellDetail1, cellDetail2})
 
             Dim detailBand As New DetailBand()
             detailBand.Height = tableDetail.Height
@@ -187,7 +193,7 @@ Namespace RuntimeReportsApplication
             evenStyle.StyleUsing.UseBackColor = True
             evenStyle.Name = "EvenStyle"
 
-            report.StyleSheet.AddRange(New XRControlStyle() { oddStyle, evenStyle })
+            report.StyleSheet.AddRange(New XRControlStyle() {oddStyle, evenStyle})
 
             tableDetail.OddStyleName = "OddStyle"
             tableDetail.EvenStyleName = "EvenStyle"
@@ -198,20 +204,18 @@ Namespace RuntimeReportsApplication
             table.WidthF = report.PageWidth - report.Margins.Left - report.Margins.Right
         End Sub
 
-        Private Sub tableHeader_BeforePrint(ByVal sender As Object, ByVal e As System.Drawing.Printing.PrintEventArgs)
+        Private Sub tableHeader_BeforePrint(ByVal sender As Object, ByVal e As System.ComponentModel.CancelEventArgs)
             AdjustTableWidth(TryCast(sender, XRTable))
         End Sub
 
-        Private Sub tableDetail_BeforePrint(ByVal sender As Object, ByVal e As System.Drawing.Printing.PrintEventArgs)
+        Private Sub tableDetail_BeforePrint(ByVal sender As Object, ByVal e As System.ComponentModel.CancelEventArgs)
             AdjustTableWidth(TryCast(sender, XRTable))
         End Sub
-        #End Region ' #CreateDetailReport
+#End Region ' #CreateDetailReport
 
-        #Region "#PublishReport"
         Private Sub PublishReport(ByVal report As XtraReport)
-            Dim printTool As New ReportPrintTool(report)
-            printTool.ShowPreviewDialog()
+            PrintHelper.ShowRibbonPrintPreview(Me, report)
         End Sub
-        #End Region ' #PublishReport
+
     End Class
 End Namespace

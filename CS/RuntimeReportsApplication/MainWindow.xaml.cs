@@ -1,6 +1,7 @@
 ﻿#region #Reference
 using DevExpress.DataAccess.ConnectionParameters;
 using DevExpress.DataAccess.Sql;
+using DevExpress.Xpf.Printing;
 using DevExpress.XtraPrinting;
 using DevExpress.XtraReports.Configuration;
 using DevExpress.XtraReports.UI;
@@ -16,11 +17,10 @@ namespace RuntimeReportsApplication {
     public partial class MainWindow : Window {
         public MainWindow() {
             InitializeComponent();
-            CreateReport();
         }
 
         #region #CreateReport
-        public void CreateReport() {
+        public XtraReport CreateReport() {
             // Create an empty report.
             XtraReport report = new XtraReport();
 
@@ -35,8 +35,7 @@ namespace RuntimeReportsApplication {
             SqlDataSource ds = report.DataSource as SqlDataSource;
             CreateDetailReport(report, ds.Queries[0].Name + "." + ds.Relations[0].Name);
 
-            // Publish the report.
-            PublishReport(report);
+            return report;
         }
         #endregion #CreateReport
 
@@ -196,20 +195,18 @@ namespace RuntimeReportsApplication {
             table.WidthF = report.PageWidth - report.Margins.Left - report.Margins.Right;
         }
 
-        void tableHeader_BeforePrint(object sender, System.Drawing.Printing.PrintEventArgs e) {
+        void tableHeader_BeforePrint(object sender, System.ComponentModel.CancelEventArgs e) {
             AdjustTableWidth(sender as XRTable);
         }
 
-        void tableDetail_BeforePrint(object sender, System.Drawing.Printing.PrintEventArgs e) {
+        void tableDetail_BeforePrint(object sender, System.ComponentModel.CancelEventArgs e) {
             AdjustTableWidth(sender as XRTable);
         }
         #endregion #CreateDetailReport
 
-        #region #PublishReport
-        private void PublishReport(XtraReport report) {
-            ReportPrintTool printTool = new ReportPrintTool(report);
-            printTool.ShowPreviewDialog();
+        private void Window_Loaded(object sender, RoutedEventArgs e) {
+            XtraReport report = CreateReport();
+            PrintHelper.ShowRibbonPrintPreview(this, report);
         }
-        #endregion #PublishReport
     }
 }
