@@ -1,6 +1,7 @@
 ﻿#Region "#Reference"
 Imports DevExpress.DataAccess.ConnectionParameters
 Imports DevExpress.DataAccess.Sql
+Imports DevExpress.Drawing
 Imports DevExpress.Xpf.Printing
 Imports DevExpress.XtraPrinting
 Imports DevExpress.XtraReports.Configuration
@@ -80,7 +81,7 @@ Namespace RuntimeReportsApplication
         Private Sub CreateReportHeader(ByVal report As XtraReport, ByVal caption As String)
             ' Create a report title.
             Dim label As New XRLabel()
-            label.Font = New Font("Tahoma", 12, System.Drawing.FontStyle.Bold)
+            label.Font = New DXFont("Tahoma", 12, DXFontStyle.Bold)
             label.Text = caption
             label.WidthF = 300.0F
 
@@ -94,11 +95,11 @@ Namespace RuntimeReportsApplication
         Private Sub CreateDetail(ByVal report As XtraReport)
             ' Create a new label with the required settings. bound to the CategoryName data field.
             Dim labelDetail As New XRLabel()
-            labelDetail.Font = New Font("Tahoma", 10, System.Drawing.FontStyle.Bold)
+            labelDetail.Font = New DXFont("Tahoma", 10, DXFontStyle.Bold)
             labelDetail.WidthF = 300.0F
 
             ' Bind the label to the CategoryName data field depending on the report's data binding mode.
-            If Settings.Default.UserDesignerOptions.DataBindingMode = DataBindingMode.Bindings Then
+            If DevExpress.XtraReports.Configuration.Settings.Default.UserDesignerOptions.DataBindingMode = DataBindingMode.Bindings Then
                 labelDetail.DataBindings.Add("Text", report.DataSource, "queryCategories.CategoryName", "Category: {0}")
             Else
                 labelDetail.ExpressionBindings.Add(New ExpressionBinding("BeforePrint", "Text", "'Category: ' + [CategoryName]"))
@@ -131,8 +132,8 @@ Namespace RuntimeReportsApplication
             tableHeader.Rows.Add(New XRTableRow())
             tableHeader.Borders = BorderSide.All
             tableHeader.BorderColor = Color.DarkGray
-            tableHeader.Font = New Font("Tahoma", 10, System.Drawing.FontStyle.Bold)
-            tableHeader.Padding = 10
+            tableHeader.Font = New DXFont("Tahoma", 10, DXFontStyle.Bold)
+            tableHeader.Padding = New PaddingInfo(10)
             tableHeader.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
 
             Dim cellHeader1 As New XRTableCell()
@@ -155,14 +156,14 @@ Namespace RuntimeReportsApplication
             tableDetail.Rows.Add(New XRTableRow())
             tableDetail.Borders = BorderSide.Left Or BorderSide.Right Or BorderSide.Bottom
             tableDetail.BorderColor = Color.DarkGray
-            tableDetail.Font = New Font("Tahoma", 10)
-            tableDetail.Padding = 10
+            tableDetail.Font = New DXFont("Tahoma", 10)
+            tableDetail.Padding = New PaddingInfo(10)
             tableDetail.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
 
             Dim cellDetail1 As New XRTableCell()
             Dim cellDetail2 As New XRTableCell()
             cellDetail2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight
-            If Settings.Default.UserDesignerOptions.DataBindingMode = DataBindingMode.Bindings Then
+            If DevExpress.XtraReports.Configuration.Settings.Default.UserDesignerOptions.DataBindingMode = DataBindingMode.Bindings Then
                 cellDetail1.DataBindings.Add("Text", report.DataSource, dataMember & ".ProductName")
                 cellDetail2.DataBindings.Add("Text", report.DataSource, dataMember & ".UnitPrice", "{0:$0.00}")
             Else

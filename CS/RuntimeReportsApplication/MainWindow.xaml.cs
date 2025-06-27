@@ -1,6 +1,7 @@
 ﻿#region #Reference
 using DevExpress.DataAccess.ConnectionParameters;
 using DevExpress.DataAccess.Sql;
+using DevExpress.Drawing;
 using DevExpress.Xpf.Printing;
 using DevExpress.XtraPrinting;
 using DevExpress.XtraReports.Configuration;
@@ -71,7 +72,7 @@ namespace RuntimeReportsApplication {
         private void CreateReportHeader(XtraReport report, string caption) {
             // Create a report title.
             XRLabel label = new XRLabel();
-            label.Font = new Font("Tahoma", 12, System.Drawing.FontStyle.Bold);
+            label.Font = new DXFont("Tahoma", 12, DXFontStyle.Bold);
             label.Text = caption;
             label.WidthF = 300F;
 
@@ -85,11 +86,11 @@ namespace RuntimeReportsApplication {
         private void CreateDetail(XtraReport report) {
             // Create a new label with the required settings. bound to the CategoryName data field.
             XRLabel labelDetail = new XRLabel();
-            labelDetail.Font = new Font("Tahoma", 10, System.Drawing.FontStyle.Bold);
+            labelDetail.Font = new DXFont("Tahoma", 10, DXFontStyle.Bold);
             labelDetail.WidthF = 300F;
 
             // Bind the label to the CategoryName data field depending on the report's data binding mode.
-            if (Settings.Default.UserDesignerOptions.DataBindingMode == DataBindingMode.Bindings)
+            if (DevExpress.XtraReports.Configuration.Settings.Default.UserDesignerOptions.DataBindingMode == DataBindingMode.Bindings)
                 labelDetail.DataBindings.Add("Text", report.DataSource, "queryCategories.CategoryName", "Category: {0}");
             else labelDetail.ExpressionBindings.Add(
                 new ExpressionBinding("BeforePrint", "Text", "'Category: ' + [CategoryName]"));
@@ -121,8 +122,8 @@ namespace RuntimeReportsApplication {
             tableHeader.Rows.Add(new XRTableRow());
             tableHeader.Borders = BorderSide.All;
             tableHeader.BorderColor = Color.DarkGray;
-            tableHeader.Font = new Font("Tahoma", 10, System.Drawing.FontStyle.Bold);
-            tableHeader.Padding = 10;
+            tableHeader.Font = new DXFont("Tahoma", 10, DXFontStyle.Bold);
+            tableHeader.Padding = new PaddingInfo(10);
             tableHeader.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
 
             XRTableCell cellHeader1 = new XRTableCell();
@@ -145,14 +146,14 @@ namespace RuntimeReportsApplication {
             tableDetail.Rows.Add(new XRTableRow());
             tableDetail.Borders = BorderSide.Left | BorderSide.Right | BorderSide.Bottom;
             tableDetail.BorderColor = Color.DarkGray;
-            tableDetail.Font = new Font("Tahoma", 10);
-            tableDetail.Padding = 10;
+            tableDetail.Font = new DXFont("Tahoma", 10);
+            tableDetail.Padding = new PaddingInfo(10);
             tableDetail.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
 
             XRTableCell cellDetail1 = new XRTableCell();
             XRTableCell cellDetail2 = new XRTableCell();
             cellDetail2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            if (Settings.Default.UserDesignerOptions.DataBindingMode == DataBindingMode.Bindings) {
+            if (DevExpress.XtraReports.Configuration.Settings.Default.UserDesignerOptions.DataBindingMode == DataBindingMode.Bindings) {
                 cellDetail1.DataBindings.Add("Text", report.DataSource, dataMember + ".ProductName");
                 cellDetail2.DataBindings.Add("Text", report.DataSource, dataMember + ".UnitPrice", "{0:$0.00}");
             } else {
