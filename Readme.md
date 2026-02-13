@@ -42,7 +42,7 @@ Starting with v.17.2, the report uses [binding expressions](https://docs.devexp
 - [Report Designer for WPF - How to switch the Report Wizard to a single-query version](https://github.com/DevExpress-Examples/Reporting_report-designer-for-wpf-how-to-switch-the-report-wizard-to-a-single-query-version-t506224)
 
 <!-- feedback -->
-## Does this example address your development requirements/objectives?
+## Does This Example Address Your Development Requirements/Objectives?
 
 [<img src="https://www.devexpress.com/support/examples/i/yes-button.svg"/>](https://www.devexpress.com/support/examples/survey.xml?utm_source=github&utm_campaign=reporting-wpf-create-report-in-code&~~~was_helpful=yes) [<img src="https://www.devexpress.com/support/examples/i/no-button.svg"/>](https://www.devexpress.com/support/examples/survey.xml?utm_source=github&utm_campaign=reporting-wpf-create-report-in-code&~~~was_helpful=no)
 
